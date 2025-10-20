@@ -1,0 +1,41 @@
+services:
+  db:
+    image: postgres:15
+    restart: unless-stopped
+    env_file:
+      - ./backend/.env
+    volumes:
+      - dbdata:/var/lib/postgresql/data
+    ports:
+      - '${HOST_DB_PORT:-5433}:5432'
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    env_file:
+      - ./backend/.env
+    volumes:
+      - ./backend:/app:delegated
+      - /app/node_modules
+    ports:
+      - '${HOST_BACKEND_PORT:-3334}:3333'
+    depends_on:
+      - db
+    command: sh -c "npx prisma migrate deploy && node dist/main.js"
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    environment:
+      - NODE_ENV=${NODE_ENV:-production}
+      - NEXT_TELEMETRY_DISABLED=${NEXT_TELEMETRY_DISABLED:-1}
+      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-http://localhost:3334}
+    ports:
+      - '${HOST_FRONTEND_PORT:-3001}:3000'
+    depends_on:
+      - backend
+
+volumes:
+  dbdata:
