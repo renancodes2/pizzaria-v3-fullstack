@@ -133,7 +133,7 @@ O backend é responsável por:
 - Autenticação (registro/login, JWT, refresh tokens)
 - Gerenciamento de pizzas (CRUD, traduções, estoque)
 - Gerenciamento de pedidos (criação, atualização de status)
-- Integração com Stripe para pagamentos (criação de PaymentIntents e endpoint de webhook) (alert(Em fase de teste!))
+- Integração com Stripe para pagamentos (criação de PaymentIntents e endpoint de webhook) **(alert(Em fase de teste!))**
 - Upload de imagens via Cloudinary
 - Gerenciamento de entregas (endereços, cálculo de distância/tempo)
 - Reviews e controle de estoque (stock movements)
