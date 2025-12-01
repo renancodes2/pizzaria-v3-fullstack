@@ -126,21 +126,46 @@ npm run dev
 
 Se o frontend não estiver pronto, você pode testar apenas o backend via API (ex.: `GET /pizzas`).
 
-### O que o backend faz
+### O que o backend faz (detalhado)
 
-O backend é responsável por: 
+O backend é implementado com NestJS e Prisma e concentra a maior parte da lógica do domínio da aplicação. Abaixo estão as responsabilidades principais, onde procurar o código e observações operacionais:
 
-- Autenticação (registro/login, JWT, refresh tokens)
-- Gerenciamento de pizzas (CRUD, traduções, estoque)
-- Gerenciamento de pedidos (criação, atualização de status)
-- Integração com Stripe para pagamentos (criação de PaymentIntents e endpoint de webhook) (alert(Em fase de teste!))
-- Upload de imagens via Cloudinary
-- Gerenciamento de entregas (endereços, cálculo de distância/tempo)
-- Reviews e controle de estoque (stock movements)
+- Autenticação e autorização
+  - Registro e login de usuários (validação, hashing de senha com bcrypt). Autenticação baseada em JWT com suporte a refresh tokens armazenados no banco e rotacionáveis.
+  - Arquivo(s): `backend/src/auth/*` (controller, service, DTOs, guards, estratégias).
 
-Estas responsabilidades estão implementadas nas rotas e serviços dentro da pasta `backend/src`.
+- Pizzas (catálogo)
+  - CRUD de pizzas, campos traduzíveis, upload de imagens (Cloudinary) e regras de estoque.
+  - Arquivo(s): `backend/src/pizzas/*`.
 
-Lembre-se de apontar `NEXT_PUBLIC_API_URL` para a URL do backend (ex: `http://localhost:3333` quando rodando localmente sem Docker).
+- Pedidos
+  - Criação de pedidos, atualização de status (p.ex. pago, em preparo, enviado), integração com gateway de pagamentos e emissão de eventos via WebSockets para atualizações em tempo real.
+  - Arquivo(s): `backend/src/orders/*`, `backend/src/orders/orders.gateway.ts`.
+
+- Pagamentos (Stripe)
+  - Criação de PaymentIntents, confirmação de pagamento e endpoint de webhook para processar eventos (ex.: pagamento confirmado). Testes com Stripe CLI/local em desenvolvimento são recomendados.
+  - Arquivo(s): `backend/src/payments/*`.
+
+- Entregas / Geolocalização
+  - Cálculo de distância e duração usando Google Distance Matrix (serviço em `backend/src/shared/geo.service.ts`), gerenciamento de endereços e cálculo de rotas aproximadas para estimativa de entrega.
+
+- Reviews e controle de estoque
+  - Gerenciamento de avaliações de usuários e movimentos de estoque (entrada/saída) com histórico.
+
+- Uploads e mídia
+  - Uploads de imagens via Cloudinary; middleware Multer para multipart/form-data (`multer` + `multer-storage-cloudinary`).
+
+- Banco de dados e migrações
+  - Prisma como ORM; schema em `backend/prisma/schema.prisma`. Migrations controladas em `backend/prisma/migrations` e geração do client com `npx prisma generate`.
+
+Observações operacionais:
+- O backend expõe endpoints REST e também WebSockets (Socket.IO) para notificações e atualizações em tempo real.
+- Certifique-se de configurar corretamente as variáveis de ambiente do `backend/.env` (DATABASE_URL, JWT_SECRET, JWT_REFRESH_SECRET, STRIPE_KEY, CLOUDINARY_* etc.).
+- Para desenvolvimento com Docker Compose usamos bind-mount (`./backend:/app`) por conveniência — em produção remova o bind-mount e use a imagem construída.
+- Endpoint útil para debug: a documentação Swagger (se habilitada) pode ser acessada no runtime (veja `@nestjs/swagger` e `swagger-ui-express` na app).
+
+Lembrete: a variável `NEXT_PUBLIC_API_URL` deve apontar para a URL base do backend (ex.: `http://localhost:3333` quando estiver rodando o backend localmente sem Docker).  
+
 
 ---
 

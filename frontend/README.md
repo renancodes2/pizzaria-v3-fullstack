@@ -1,5 +1,12 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+NOTE: This frontend is in an early development stage. Current work-in-progress features in this repo include:
+- Basic app layout and styling (Tailwind)
+- Initial authentication UI (login/register pages) and an `AuthProvider` context
+- Next API routes used as a thin proxy for auth (login/register/refresh/logout) to the backend
+
+The UI and most user flows are still under development — expect changes as functionality is implemented and improved.
+
 ## Getting Started
 
 First, run the development server:
