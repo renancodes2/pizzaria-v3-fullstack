@@ -130,9 +130,19 @@ Se o frontend não estiver pronto, você pode testar apenas o backend via API (e
 
 O backend é implementado com NestJS e Prisma e concentra a maior parte da lógica do domínio da aplicação. Abaixo estão as responsabilidades principais, onde procurar o código e observações operacionais:
 
+<<<<<<< HEAD
 - Autenticação e autorização
   - Registro e login de usuários (validação, hashing de senha com bcrypt). Autenticação baseada em JWT com suporte a refresh tokens armazenados no banco e rotacionáveis.
   - Arquivo(s): `backend/src/auth/*` (controller, service, DTOs, guards, estratégias).
+=======
+- Autenticação (registro/login, JWT, refresh tokens)
+- Gerenciamento de pizzas (CRUD, traduções, estoque)
+- Gerenciamento de pedidos (criação, atualização de status)
+- Integração com Stripe para pagamentos (criação de PaymentIntents e endpoint de webhook) **(alert(Em fase de teste!))**
+- Upload de imagens via Cloudinary
+- Gerenciamento de entregas (endereços, cálculo de distância/tempo)
+- Reviews e controle de estoque (stock movements)
+>>>>>>> f1e8eaf79a9a06979755eac89b172cfacf1f3a26
 
 - Pizzas (catálogo)
   - CRUD de pizzas, campos traduzíveis, upload de imagens (Cloudinary) e regras de estoque.
